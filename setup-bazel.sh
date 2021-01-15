@@ -40,5 +40,7 @@ fi
 chmod +x install.sh
 ./install.sh --user
 rm -f install.sh
-echo 'export PATH="$HOME/bin:$PATH' >> $HOME/.bashrc
+echo "Adding $HOME/bin to $GITHUB_PATH"
+echo "$HOME/bin" >> "$GITHUB_PATH"
+# echo 'export PATH="$HOME/bin:$PATH' >> $HOME/.bashrc
 echo "::endgroup::"

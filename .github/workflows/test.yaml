@@ -52,5 +52,5 @@ jobs:
         
       - name: run bazel command
         run: |
-          export PATH="$PATH:$HOME/bin"
+          # export PATH="$PATH:$HOME/bin"
           bazel -h
