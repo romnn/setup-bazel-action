@@ -1,0 +1,18 @@
+name: test
+
+on: ['push']
+
+jobs:
+  query:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: setup bazel
+        uses: ./
+        with:
+          version: 3.7.1
+        
+      - name: run bazel command
+        run: |
+          bazel -h
