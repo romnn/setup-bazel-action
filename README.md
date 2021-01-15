@@ -25,3 +25,10 @@ jobs:
       run: |
         bazel -h
 ```
+
+#### Testing
+
+To test locally, you can use [act](https://github.com/nektos/act) to run the `setup-bazel-clean` step in the actions test workflow:
+```bash
+act -j setup-bazel-clean
+```
