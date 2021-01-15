@@ -4,7 +4,11 @@ on: ['push']
 
 jobs:
   setup-bazel:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # windows not supported at the moment, feel free to create a pull request
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
 
