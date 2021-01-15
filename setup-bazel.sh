@@ -1,3 +1,5 @@
+#!/bin/bash
+
 V=$1
 OS=linux
 ARCH=x86_64
@@ -14,9 +16,10 @@ if [[ "$V" == "HEAD" ]]; then URL="$CI_BASE/$CI_ARTIFACT"; fi
 
 if [[ -z "$V" ]]; then
   echo "::error::Missing bazel version"
+  exit 1
 fi
 
-if [ -x $(which bazel) ]; then
+if which bazel > /dev/null; then
   INSTALLED_V=$(bazel --version | sed 's/bazel //')
   echo "Note: bazel $INSTALLED_V already installed."
 
@@ -29,8 +32,13 @@ if [ -x $(which bazel) ]; then
 fi
 
 echo "::group::Install bazel from $URL"
-wget -O install.sh $URL
+if which wget > /dev/null; then
+  wget --quiet -O install.sh $URL > /dev/null
+else
+  curl -L --silent --output install.sh $URL > /dev/null
+fi
 chmod +x install.sh
 ./install.sh --user
 rm -f install.sh
+echo 'export PATH="$HOME/bin:$PATH' >> $HOME/.bashrc
 echo "::endgroup::"

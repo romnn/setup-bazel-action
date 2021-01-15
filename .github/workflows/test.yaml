@@ -5,6 +5,7 @@ on: ['push']
 jobs:
   setup-bazel:
     strategy:
+      fail-fast: false
       matrix:
         # windows not supported at the moment, feel free to create a pull request
         os: [ubuntu-latest, macos-latest]
@@ -16,7 +17,7 @@ jobs:
       - name: setup bazel
         uses: ./
         with:
-          version: 3.7.1
+          version: ${{ matrix.version }}
         
       - name: run bazel command
         run: |
@@ -24,18 +25,32 @@ jobs:
 
   setup-bazel-clean:
     strategy:
+      fail-fast: false
       matrix:
         container: ['ubuntu:20.04', 'centos:8', 'debian:stable']
         version: ['3.7.1']
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.container }}
-      volumes:
-        - './:/action'
     steps:
+      - uses: actions/checkout@v2
+
+      - name: "[centos] install necessary tools"
+        if: "startsWith(matrix.container, 'cent')"
+        run: |
+          yum install -y which unzip > /dev/null
+
+      - name: "[ubuntu/debian] install necessary tools"
+        if: "startsWith(matrix.container, 'ubuntu') || startsWith(matrix.container, 'debian')"
+        run: |
+          apt-get update > /dev/null
+          apt-get install -y sudo wget unzip > /dev/null
+
       - name: setup bazel
-        run: /action/setup-bazel.sh ${{ matrix.version }}
+        run: |
+          bash ./setup-bazel.sh ${{ matrix.version }}
         
       - name: run bazel command
         run: |
+          export PATH="$PATH:$HOME/bin"
           bazel -h
