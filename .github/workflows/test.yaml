@@ -26,12 +26,14 @@ jobs:
       matrix:
         container: ['ubuntu:20.04', 'centos:8', 'debian:stable']
     runs-on: ubuntu-latest
-    container: ${{ matrix.container }}
+    container:
+      image: ${{ matrix.container }}
+      # volumes: - ./:/action
     steps:
       - uses: actions/checkout@v2
 
       - name: setup bazel
-        uses: ./
+        uses: romnnn/setup-bazel-action@master
         with:
           version: 3.7.1
         
