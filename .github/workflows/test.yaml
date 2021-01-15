@@ -20,3 +20,20 @@ jobs:
       - name: run bazel command
         run: |
           bazel -h
+
+  setup-bazel-clean:
+    strategy:
+      matrix:
+        container: ['ubuntu:20.04', 'centos:8', 'debian:stable']
+    container: ${{ matrix.container }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: setup bazel
+        uses: ./
+        with:
+          version: 3.7.1
+        
+      - name: run bazel command
+        run: |
+          bazel -h
