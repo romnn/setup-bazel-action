@@ -4,6 +4,8 @@ GitHub action to setup bazel.
 
 #### Usage
 
+**Note**: Make sure the runner or container image you use the action with has at least `wget`/`curl`, `unzip` and a java jdk installed.
+
 ```yaml
 # .github/workflows/ci.yml
 name: CI
@@ -24,11 +26,4 @@ jobs:
     - name: 'run a bazel command'
       run: |
         bazel -h
-```
-
-#### Testing
-
-To test locally, you can use [act](https://github.com/nektos/act) to run the `setup-bazel-clean` step in the actions test workflow:
-```bash
-act -j setup-bazel-clean
 ```
