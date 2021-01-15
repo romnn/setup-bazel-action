@@ -12,17 +12,25 @@ URL="$GH_BASE/$GH_ARTIFACT"
 if [[ "$V" == "HEAD" ]]; then CI_ARTIFACT="$(wget -qO- $CI_BASE | grep -o 'bazel-[-_a-zA-Z0-9\.]*-installer.sh' | uniq)"; fi
 if [[ "$V" == "HEAD" ]]; then URL="$CI_BASE/$CI_ARTIFACT"; fi
 
-if [ -x $(which bazel) ]; then
-  echo "Bazel already installed. Skipping."
-else
-  if [[ -z "$V" ]]; then
-    echo "::error::Missing bazel version"
-  fi
-
-  echo "::group::Install bazel from $URL"
-  wget -O install.sh $URL
-  chmod +x install.sh
-  ./install.sh --user
-  rm -f install.sh
-  echo "::endgroup::"
+if [[ -z "$V" ]]; then
+  echo "::error::Missing bazel version"
 fi
+
+if [ -x $(which bazel) ]; then
+  INSTALLED_V=$(bazel --version | sed 's/bazel //')
+  echo "Note: bazel $INSTALLED_V already installed."
+
+  if [[ "$INSTALLED_V" == "$V" ]]; then
+    echo "Skipping installation."
+    exit 0
+  else
+    echo "::warning::Bazel $INSTALLED_V already installed, attempting to install bazel $V..."
+  fi
+fi
+
+echo "::group::Install bazel from $URL"
+wget -O install.sh $URL
+chmod +x install.sh
+./install.sh --user
+rm -f install.sh
+echo "::endgroup::"
