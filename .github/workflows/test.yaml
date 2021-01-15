@@ -30,7 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.container }}
-      volumes: ./:/action
+      volumes:
+        - './:/action'
     steps:
       - name: setup bazel
         run: /action/setup-bazel.sh ${{ matrix.version }}
